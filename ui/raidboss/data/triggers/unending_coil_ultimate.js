@@ -288,25 +288,16 @@
     { id: 'UCU Nael Fireball 1',
       regex: /:Ragnarok:26B8:/,
       delaySeconds: 35,
-      infoText: function(data) {
-        if (data.naelFireballCount >= 1)
-          return;
-        return 'Fire IN';
-      },
-      tts: function(data) {
-        if (data.naelFireballCount >= 1)
-          return;
-        return 'fire in';
-      },
-      run: function(data) { data.naelFireballCount = 1; },
+      suppressSeconds: 1,
+      infoText: 'Fire IN',
+      tts: 'fire in',
     },
     { id: 'UCU Nael Fireball 2',
       regex: /:Ragnarok:26B8:/,
       delaySeconds: 51,
+      suppressSeconds: 1,
       infoText: function(data) {
-        if (data.naelFireballCount >= 2)
-          return;
-        if (!data.iceDebuff)
+        if (data.fireballs[1].indexOf(data.me) >= 0)
           return 'Fire OUT';
       },
       alertText: function(data) {
@@ -315,26 +306,20 @@
         // stack.  Therefore, make sure you stack.  It's possible you
         // can survive until fire 3 happens, but it's not 100%.
         // See: https://www.reddit.com/r/ffxiv/comments/78mdwd/bahamut_ultimate_mechanics_twin_and_nael_minutia/
-        if (data.naelFireballCount >= 2)
-          return;
         if (data.fireballs[1].indexOf(data.me) == -1)
           return 'Fire OUT: Be in it';
       },
       tts: function(data) {
-        if (data.naelFireballCount >= 2)
-          return;
         if (data.fireballs[1].indexOf(data.me) == -1)
           return 'fire out; go with';
         return 'fire out'
       },
-      run: function(data) { data.naelFireballCount = 2; },
     },
     { id: 'UCU Nael Fireball 3',
       regex: /:Ragnarok:26B8:/,
       delaySeconds: 77,
+      suppressSeconds: 1,
       infoText: function(data) {
-        if (data.naelFireballCount >= 3)
-          return;
         var tookTwo = data.fireballs[1].filter(function(p) { return data.fireballs[2].indexOf(p) >= 0; });
         if (tookTwo.indexOf(data.me) >= 0)
           return;
@@ -344,34 +329,26 @@
         return str;
       },
       alertText: function(data) {
-        if (data.naelFireballCount >= 3)
-          return;
         // If you were the person with fire tether #2, then you could
         // have fire debuff here and need to not stack.
         if (data.fireballs[1].indexOf(data.me) >= 0 && data.fireballs[2].indexOf(data.me) >= 0)
           return 'Thunder -> Fire IN: AVOID!';
       },
       tts: function(data) {
-        if (data.naelFireballCount >= 3)
-          return;
         if (data.fireballs[1].indexOf(data.me) >= 0 && data.fireballs[2].indexOf(data.me) >= 0)
           return 'avoid fire in';
         return 'fire in'
       },
-      run: function(data) { data.naelFireballCount = 3; },
     },
     { id: 'UCU Nael Fireball 4',
       regex: /:Ragnarok:26B8:/,
       delaySeconds: 98,
+      suppressSeconds: 1,
       infoText: function(data) {
-        if (data.naelFireballCount >= 4)
-          return;
         if (!data.fireDebuff)
           return 'Fire IN -> Thunder';
       },
       alertText: function(data) {
-        if (data.naelFireballCount >= 4)
-          return;
         // It's possible that you can take 1, 2, and 3 even if nobody dies with
         // careful ice debuff luck.  However, this means you probably shouldn't
         // take 4.  Just use the debuff here and not the fireball count.
@@ -379,13 +356,8 @@
           return 'Fire IN: AVOID! -> Thunder';
       },
       tts: function(data) {
-        if (data.naelFireballCount >= 4)
-          return;
-        if (data.fireDebuff)
-          return 'avoid fire in';
         return 'fire in';
       },
-      run: function(data) { data.naelFireballCount = 4; },
     },
     {
       regex: /:(Iceclaw:26C6|Thunderwing:26C7|Fang of Light:26CA|Tail of Darkness:26C9|Firehorn:26C5):.*:(\y{Float}):(\y{Float}):\y{Float}:$/,
@@ -659,12 +631,10 @@
     },
     {
       // One time setup.
+      id: 'UCU Initial Setup',
       regex: /:26AA:Twintania starts using/,
+      suppressSeconds: 99999,
       run: function(data) {
-        if (data.oneTimeSetup)
-          return;
-        data.oneTimeSetup = true;
-
         // TODO: a late white puddle can cause dragons to get seen for the next
         // phase so clear them again here.  Probably data for triggers needs
         // to be cleared at more reliable times.
