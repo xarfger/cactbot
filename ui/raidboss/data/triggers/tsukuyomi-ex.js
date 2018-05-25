@@ -122,7 +122,35 @@
         en: 'Meteor on YOU',
       },
     },
+	
+	// Helper for those who want to stay alive till Meteor :D
+	// Casttime of Spell ~9sec + 27 sec Delay to have 8 seconds to run to small Area
+	// http://clees.me/guides/tsukuyomi-ex/
+	/*
+    0:00 – Moon Tick 1
+    0:05 – Moon Tick 2
+    0:10 – Moon Tick 3
+    0:15 – Moon Tick 4 (Switch here if you have not)
+    0:17 – Nightfall Begins
+    0:20 – Moon Tick 5 + Weapon Appears
+    0:25 – Moon Tick 6 + Gun Resolves
+    ~0:28-0:29 – Spear Resolves
+    0:30 –  Moon Tick 7 + Meteor position locked
+    0:35 – Moon Tick 8 (You must be in the small color for this tick or you will not survive the following ticks) + Meteor explosion	
+	*/
+	{
+	  id: 'Tsukuyomi Surpreme Selenomancy',
+	  regex: /:Tsukuyomi uses Supreme Selenomancy/,
+	  delaySeconds: 36,
+	  alarmText: {
+		  en: 'Move to small Area',
+	  },
+	  tts: {
+		  en: 'Move to small Area',
+	  }
+	}
 
+	
     // TODO: fan callouts
     // TODO: add timeline
     // TODO: mob location callouts for tank (maybe based on timeline)
